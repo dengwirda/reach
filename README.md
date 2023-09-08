@@ -1,4 +1,4 @@
-## `REACH: stream-aligned unstructured mesh generation`
+## `REACH: Stream-aligned unstructured mesh generation`
 
 Generate variable resolution unstructured meshes for large-scale geophysical domains with vector-based hydrological features 'burned-in' to the mesh topology.
 
@@ -8,7 +8,9 @@ Generate variable resolution unstructured meshes for large-scale geophysical dom
 
 ### `Quickstart`
 
-    Download the <a href="https://www.hydrosheds.org/products/hydrorivers">HydroSHEDS-v1</a> shapefile (HydroRIVERS) to reach/dat
+    Download the HydroSHEDS-v1 shapefile (HydroRIVERS) to reach/dat
     Build the cython back-end: python3 setup.py build_ext --inplace
     Run a simple example case: python3 example.py
+
+The HydroSHEDS-v1 vector database is available [here](https://www.hydrosheds.org/products/hydrorivers).
 
