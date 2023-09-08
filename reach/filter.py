@@ -379,21 +379,6 @@ def filter_seed(rnet, ridx, tree):
     return
 
 
-def stream_core(rnet, mesh):
-
-    #assign all reaches to tree
-    #loop through mesh edges and form list of reaches that intersect each edge
-    
-    #greedy reconstruction of flow network:
-    #- find all outlet points in rnet
-    #- find all mesh cells containing outlets
-    #  * if cell contains multiple outlets, keep reach w largest catchment?
-    #- push all outlet cells onto queue
-    #- 
-
-    return
-
-
 def sptree_init(rnet):
     """
     Initialise a spatial tree based on a given reach network

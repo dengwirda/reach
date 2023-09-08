@@ -44,25 +44,25 @@ def ex1():
 
     if (not os.path.exists(dir_)): os.makedirs(dir_)
 
-    spac = jigsawpy.jigsaw_msh_t()
-   #name = "spac_icom_o25_3p75_1p25_l12p5_3p75.msh"
-   #name = "spac_o12p5_2p5_l6p25.msh"
-    name = "spac_o25_l25.msh"
-    jigsawpy.loadmsh(name, spac)
+   #spac = jigsawpy.jigsaw_msh_t()
+   #name = "spac_o25_l25.msh"
+   #jigsawpy.loadmsh(name, spac)  # to load existing
+
+    nlon = 360; nlat = 180
 
     data = nc.Dataset(args.spc_file, "w")
-    data.createDimension("nlon", spac.xgrid.size)
+    data.createDimension("nlon", nlon)
     data.createVariable("xlon", "f8", ("nlon"))
-    data["xlon"][:] = spac.xgrid * 180. / np.pi
-    data.createDimension("nlat", spac.ygrid.size)
+    data["xlon"][:] = np.linspace(-180., +180., nlon)
+    data.createDimension("nlat", nlat)
     data.createVariable("ylat", "f8", ("nlat"))
-    data["ylat"][:] = spac.ygrid * 180. / np.pi
+    data["ylat"][:] = np.linspace(-90.0, +90.0, nlat)
     data.createVariable("vals", "f4", ("nlat", "nlon"))
-    data["vals"][:, :] = spac.value * 1000.
+    data["vals"][:, :] = 25000.0  # in [m]
     data.close()
 
     args.sph_size = 6371220.
-    args.flt_endo = True  # keep no-outlet rivers?   
+    args.flt_endo = True  # strip no-outlet rivers??   
     args.box_xmin = -180.
     args.box_ymin = -90.0
     args.box_xmax = +180.
@@ -70,7 +70,7 @@ def ex1():
 
     filter_hydrosheds(args)
 
-    build_jigsaw_mesh(args)
+   #build_jigsaw_mesh(args)
 
 
 def build_jigsaw_mesh(args):
