@@ -131,8 +131,8 @@ def filter_init(rnet, rsph):
         ymin, ymax = +rsph, -rsph
         zmin, zmax = +rsph, -rsph
         for rpos in rdat.vert:
-            xlon = rpos.xlon * pi / 180.0
-            ylat = rpos.ylat * pi / 180.0
+            xlon = rpos.xlon * pi / 180.
+            ylat = rpos.ylat * pi / 180.
          
             rpos.xpos = rsph * cos(xlon) * \
                                cos(ylat)

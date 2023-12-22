@@ -1,11 +1,16 @@
 
+#cython: language_level=3
+#cython: boundscheck=False
+#cython: nonecheck=False
+#cython: cdivision=True
+#cython: cpow=True
+
 cimport cython
 
 """ Low-level cython kernels for reach proximity testing
 """
 # Authors: Darren Engwirda
 
-@cython.boundscheck(False)  # deactivate bnds checking
 def check_short(list rnet, rdat):
     """
     Check whether reach RDAT is "too short" wrt. the desired
@@ -42,7 +47,6 @@ def check_short(list rnet, rdat):
     return dsqr >= (5 ** 2) * hsqr
 
 
-@cython.boundscheck(False)  # deactivate bnds checking
 def check_close(list rnet, rdat, list vert, list near):
     """
     Check whether reach RDAT is "too close" wrt. the desired
@@ -122,7 +126,6 @@ def check_close(list rnet, rdat, list vert, list near):
     return (keep == 1)
 
 
-@cython.boundscheck(False)  # deactivate bnds checking
 def check_seeds(list rnet, rdat, int base, list near):
     """
     Check whether "seed" vertices could be added to the mesh

@@ -20,22 +20,22 @@ def ex1():
     tag_ = "filtered_o25_l25"
 
     args = base()
-    args.shp_file = os.path.join(
+    args.shp_file = os.path.join( # location of Hy-SHEDS
         "dat", 
         "HydroRIVERS_v10_shp", "HydroRIVERS_v10_shp",
         "HydroRIVERS_v10.shp")
 
-    args.out_file = os.path.join(
+    args.out_file = os.path.join( # location of filtered
         "out", 
         "HydroRIVERS_v10_shp", tag_,
         "filtered_25p0km.shp")
 
-    args.spc_file = os.path.join(
+    args.spc_file = os.path.join( # location for spacing
         "out",
         "HydroRIVERS_v10_shp", tag_,
         "resolution.nc")
 
-    args.msh_tags = os.path.join(
+    args.msh_tags = os.path.join( # location for meshes
         "msh", 
         "HydroRIVERS_v10_msh", tag_)
 
@@ -44,12 +44,18 @@ def ex1():
 
     if (not os.path.exists(dir_)): os.makedirs(dir_)
 
-   #spac = jigsawpy.jigsaw_msh_t()
-   #name = "spac_o25_l25.msh"
-   #jigsawpy.loadmsh(name, spac)  # to load existing
+    # 1. filter following jigsaw spacing
+    """
+    spac = jigsawpy.jigsaw_msh_t()
+    name = "spac_o25_l25.msh"
+    jigsawpy.loadmsh(name, spac)
+    
+    """
 
     nlon = 360; nlat = 180
 
+    # 2. filter at const. length of 25km
+    """
     data = nc.Dataset(args.spc_file, "w")
     data.createDimension("nlon", nlon)
     data.createVariable("xlon", "f8", ("nlon"))
@@ -60,8 +66,33 @@ def ex1():
     data.createVariable("vals", "f4", ("nlat", "nlon"))
     data["vals"][:, :] = 25000.0  # in [m]
     data.close()
-
-    args.sph_size = 6371220.
+    
+    """
+    
+    # 3. or, filter at a variable length
+    data = nc.Dataset(args.spc_file, "w")
+    data.createDimension("nlon", nlon)
+    data.createVariable("xlon", "f8", ("nlon"))
+    data["xlon"][:] = np.linspace(-180., +180., nlon)
+    data.createDimension("nlat", nlat)
+    data.createVariable("ylat", "f8", ("nlat"))
+    data["ylat"][:] = np.linspace(-90.0, +90.0, nlat)
+    data.createVariable("vals", "f4", ("nlat", "nlon"))
+ 
+    xvec = np.asarray(data["xlon"][:]) * np.pi / 180.
+    yvec = np.asarray(data["ylat"][:]) * np.pi / 180.
+    
+    xmat, ymat = np.meshgrid(xvec, yvec, sparse=True)
+ 
+    # 25km globally, 5km on Mississippi basin
+    filt = 25000. - 20000. * np.exp(-(
+        4.0 * (xmat + 90. * np.pi / 180.) ** 2 +
+        4.0 * (ymat - 30. * np.pi / 180.) ** 2) ** 4)
+    
+    data["vals"][:, :] = filt  # in [m]
+    data.close()
+    
+    args.sph_size = 6371220.  # earth radius
     args.flt_endo = True  # strip no-outlet rivers??   
     args.box_xmin = -180.
     args.box_ymin = -90.0
@@ -70,7 +101,11 @@ def ex1():
 
     filter_hydrosheds(args)
 
-   #build_jigsaw_mesh(args)
+    # optional: build jigsaw mesh using same spacing
+    """
+    build_jigsaw_mesh(args)
+    
+    """
 
 
 def build_jigsaw_mesh(args):

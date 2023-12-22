@@ -1,0 +1,4 @@
+numpy
+fiona
+cython
+netCDF4
